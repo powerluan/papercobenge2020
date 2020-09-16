@@ -1,0 +1,21 @@
+library(foreign);library(lmtest);library(car);library(sandwich)
+
+# Faz a leitura dos dados referentes aos escores das competências socioemocionais e desempenho final
+rendimento <- read.csv2("pasta3.csv", header = TRUE, sep = ";" , dec = ",")
+
+#reg <- lm(DesempenhoFinal ~ AberturaaoNovo + Autogestao + Engajamentocomosoutros + Amabilidade + ResilienciaEmocional, data = rendimento)
+
+reg <- lm(DesempenhoFinal ~ Autogestao, data = rendimento)
+summary(reg)
+
+# Teste de Heterocedasticidade - Breush-Pagan
+# A hipótese nula é de presença homocedasticidade.
+bptest(reg)
+
+# Teste de Autocorrelação - Durbin-Watson
+# A hipótese nula é ausência de autocorrelação
+dwtest(reg)
+
+# Corrigindo cálculo da matriz de covariância quando há heterocedasticidade e/ou autocorrelação - Heteroskedasticity and Autocorrelation Consistent Covariance.
+coeftest(reg)
+coeftest(reg, vcov=vcovHAC)
